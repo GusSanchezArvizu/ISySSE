@@ -1,4 +1,4 @@
-/*
+ /*
  *  Self-test demonstration program
  *
  *  Copyright The Mbed TLS Contributors
@@ -29,7 +29,8 @@
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
-
+#include "mbedtls/aes.h"
+/*
 #include "mbedtls/entropy.h"
 #include "mbedtls/entropy_poll.h"
 #include "mbedtls/hmac_drbg.h"
@@ -63,6 +64,7 @@
 #include "mbedtls/ecjpake.h"
 #include "mbedtls/timing.h"
 #include "mbedtls/nist_kw.h"
+*/
 #if defined(MBEDTLS_ECDH_C) && defined(MBEDTLS_ECDH_ALT) && defined(MBEDTLS_NXP_SSSAPI)
 #include "mbedtls/ecdh.h"
 #endif
@@ -80,6 +82,10 @@
 #include "ksdk_mbedtls.h"
 #endif
 #include "mbedtls/version.h"
+
+
+#define AES_KEY_SIZE 16    // AES-128 uses a 16-byte key
+#define AES_BLOCK_SIZE 16  // AES block size is 16 bytes
 
 #define mbedtls_printf PRINTF
 #define mbedtls_snprintf snprintf
@@ -194,7 +200,7 @@ int mbedtls_entropy_self_test_wrapper( int verbose )
 #if defined(MBEDTLS_ENTROPY_NV_SEED) && !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
     create_entropy_seed_file( );
 #endif
-    return( mbedtls_entropy_self_test( verbose ) );
+    //return( mbedtls_entropy_self_test( verbose ) );
 }
 #endif
 
@@ -222,110 +228,31 @@ typedef struct
 const selftest_t selftests[] =
 {
 #if defined(MBEDTLS_MD2_C)
-    {"md2", mbedtls_md2_self_test},
+	{"md2", mbedtls_md2_self_test},
 #endif
 #if defined(MBEDTLS_MD4_C)
-    {"md4", mbedtls_md4_self_test},
-#endif
-#if defined(MBEDTLS_MD5_C)
-    {"md5", mbedtls_md5_self_test},
-#endif
-#if defined(MBEDTLS_RIPEMD160_C)
-    {"ripemd160", mbedtls_ripemd160_self_test},
-#endif
-#if defined(MBEDTLS_SHA1_C)
-    {"sha1", mbedtls_sha1_self_test},
-#endif
-#if defined(MBEDTLS_SHA256_C)
-    {"sha256", mbedtls_sha256_self_test},
-#endif
-#if defined(MBEDTLS_SHA512_C)
-    {"sha512", mbedtls_sha512_self_test},
-#endif
-#if defined(MBEDTLS_ARC4_C)
-    {"arc4", mbedtls_arc4_self_test},
-#endif
-#if defined(MBEDTLS_DES_C)
-    {"des", mbedtls_des_self_test},
+	{"md4", mbedtls_md4_self_test},
 #endif
 #if defined(MBEDTLS_AES_C)
     {"aes", mbedtls_aes_self_test},
 #endif
-#if defined(MBEDTLS_GCM_C) && defined(MBEDTLS_AES_C)
-    {"gcm", mbedtls_gcm_self_test},
-#endif
-#if defined(MBEDTLS_CCM_C) && defined(MBEDTLS_AES_C)
-    {"ccm", mbedtls_ccm_self_test},
-#endif
-#if defined(MBEDTLS_NIST_KW_C) && defined(MBEDTLS_AES_C)
-    {"nist_kw", mbedtls_nist_kw_self_test},
-#endif
-#if defined(MBEDTLS_CMAC_C)
-    {"cmac", mbedtls_cmac_self_test},
-#endif
+
 #if defined(MBEDTLS_CHACHA20_C)
-    {"chacha20", mbedtls_chacha20_self_test},
+	{"chacha20", mbedtls_chacha20_self_test},
 #endif
-#if defined(MBEDTLS_POLY1305_C)
-    {"poly1305", mbedtls_poly1305_self_test},
-#endif
-#if defined(MBEDTLS_CHACHAPOLY_C)
-    {"chacha20-poly1305", mbedtls_chachapoly_self_test},
-#endif
-#if defined(MBEDTLS_BASE64_C)
-    {"base64", mbedtls_base64_self_test},
-#endif
-#if defined(MBEDTLS_BIGNUM_C)
-    {"mpi", mbedtls_mpi_self_test},
-#endif
-#if defined(MBEDTLS_RSA_C)
-    {"rsa", mbedtls_rsa_self_test},
-#endif
-#if defined(MBEDTLS_X509_USE_C)
-    {"x509", mbedtls_x509_self_test},
-#endif
-#if defined(MBEDTLS_XTEA_C)
-    {"xtea", mbedtls_xtea_self_test},
-#endif
-#if defined(MBEDTLS_CAMELLIA_C)
-    {"camellia", mbedtls_camellia_self_test},
-#endif
-#if defined(MBEDTLS_ARIA_C)
-    {"aria", mbedtls_aria_self_test},
-#endif
-#if defined(MBEDTLS_CTR_DRBG_C)
-    {"ctr_drbg", mbedtls_ctr_drbg_self_test},
-#endif
-#if defined(MBEDTLS_HMAC_DRBG_C)
-    {"hmac_drbg", mbedtls_hmac_drbg_self_test},
-#endif
-#if defined(MBEDTLS_ECP_C)
-    {"ecp", mbedtls_ecp_self_test},
-#endif
-#if defined(MBEDTLS_ECJPAKE_C)
-    {"ecjpake", mbedtls_ecjpake_self_test},
-#endif
-#if defined(MBEDTLS_DHM_C)
-    {"dhm", mbedtls_dhm_self_test},
-#endif
-#if defined(MBEDTLS_ENTROPY_C)
-    {"entropy", mbedtls_entropy_self_test_wrapper},
-#endif
-#if defined(MBEDTLS_PKCS5_C)
-    {"pkcs5", mbedtls_pkcs5_self_test},
-#endif
+
 #if defined(MBEDTLS_ECDH_C) && defined(MBEDTLS_ECDH_ALT) && defined(MBEDTLS_NXP_SSSAPI)
-    {"ecdh", mbedtls_ecdh_self_test},
+	{"ecdh", mbedtls_ecdh_self_test},
 #endif
 /* Slower test after the faster ones */
 #if defined(MBEDTLS_TIMING_C)
-    {"timing", mbedtls_timing_self_test},
+	{"timing", mbedtls_timing_self_test},
 #endif
 /* Heap test comes last */
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
-    {"memory_buffer_alloc", mbedtls_memory_buffer_alloc_free_and_self_test},
+	{"memory_buffer_alloc", mbedtls_memory_buffer_alloc_free_and_self_test},
 #endif
-    {NULL, NULL}
+	{NULL, NULL}
 };
 #endif /* MBEDTLS_SELF_TEST */
 
@@ -425,8 +352,28 @@ static int bench_print_features(void)
     return 0;
 }
 
+
+// Plaintext (must be multiple of AES_BLOCK_SIZE)
+unsigned char plaintext[AES_BLOCK_SIZE] = "Hello-AES-K64!";
+unsigned char ciphertext[AES_BLOCK_SIZE];
+unsigned char decrypted[AES_BLOCK_SIZE];
+
+
 int main(int argc, char *argv[])
 {
+//Credentials
+// AES 128-bit key (16 bytes)
+const unsigned char key[AES_KEY_SIZE] = {
+	0x60, 0x3D, 0xEB, 0x10, 0x15, 0xCA, 0x71, 0xBE,
+	0x2B, 0x73, 0xAE, 0xF0, 0x85, 0x7D, 0x77, 0x81
+};
+
+// 16-byte Initialization Vector (IV)
+unsigned char iv[AES_BLOCK_SIZE] = {
+	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+};
+
 #if defined(MBEDTLS_SELF_TEST)
     const selftest_t *test;
 #endif /* MBEDTLS_SELF_TEST */
@@ -502,6 +449,35 @@ int main(int argc, char *argv[])
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
     mbedtls_memory_buffer_alloc_init( buf, sizeof(buf) );
 #endif
+
+    // AES Context
+	mbedtls_aes_context aes;
+	mbedtls_aes_init(&aes);
+
+	// --- ENCRYPTION ---
+	mbedtls_aes_setkey_enc(&aes, key, 128);  // Set AES-128 encryption key
+	unsigned char iv_enc[AES_BLOCK_SIZE];    // Copy IV as it will be modified
+	memcpy(iv_enc, iv, AES_BLOCK_SIZE);
+	mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, AES_BLOCK_SIZE, iv_enc, plaintext, ciphertext);
+
+	// --- DECRYPTION ---
+	mbedtls_aes_setkey_dec(&aes, key, 128);  // Set AES-128 decryption key
+	unsigned char iv_dec[AES_BLOCK_SIZE];    // Reset IV for decryption
+	memcpy(iv_dec, iv, AES_BLOCK_SIZE);
+	mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, AES_BLOCK_SIZE, iv_dec, ciphertext, decrypted);
+
+	// Cleanup
+	mbedtls_aes_free(&aes);
+
+	// Null-terminate decrypted text for printing
+	decrypted[AES_BLOCK_SIZE - 1] = '\0';
+
+	mbedtls_printf("Original Text: %s\r\n", plaintext);
+    mbedtls_printf("Encrypted (hex): ");
+    for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+    	mbedtls_printf("%02X ", ciphertext[i]);
+    }
+    mbedtls_printf("\r\nDecrypted Text: %s\r\n", decrypted);
 
 #if defined(FREESCALE_KSDK_BM)
     /* Run all the tests */

@@ -30,6 +30,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 #include "mbedtls/chacha20.h"
+#include "mbedtls/sha256.h"
 /*
 #include "mbedtls/entropy.h"
 #include "mbedtls/entropy_poll.h"
